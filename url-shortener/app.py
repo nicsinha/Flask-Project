@@ -4,7 +4,7 @@ import os.path
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-#This secret_key allow us to securely send messages bach and forth from the user make sure that thore trying to
+#This secret_key allow us to securely send messages back and forth from the user make sure that thore trying to
 #snooping on the connection can not see this info. Random key.
 app.secret_key = "asdertgcde1279"
 
@@ -45,6 +45,17 @@ def your_url():
         return render_template('your-url.html',code = request.form['code'])
     else:
         return redirect(url_for('home'))
+
+#Life 51 detect if there is any string after \ in url then store in the code and then pass that code to function.
+
+@app.route('/<string:code>')
+def redirect_to_url(code):
+    if os.path.exists('urls.json'):
+        with open('urls.json') as url_file:
+            urls = json.load(url_file)
+            if code in urls.keys():
+                if 'url' in urls[code].keys():
+                    return redirect(urls[code]['url'])  
 
 
 if __name__ == '__main__':
