@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, abort
 import json
 import os.path
 from werkzeug.utils import secure_filename
+
+#abort allow us to, if something goes wrong, send a special message depending on what it is.
 
 app = Flask(__name__)
 #This secret_key allow us to securely send messages back and forth from the user make sure that thore trying to
@@ -46,7 +48,7 @@ def your_url():
     else:
         return redirect(url_for('home'))
 
-#Life 51 detect if there is any string after \ in url then store in the code and then pass that code to function.
+#Line 51 detect if there is any string after \ in url then store in the code and then pass that code to function.
 
 @app.route('/<string:code>')
 def redirect_to_url(code):
@@ -60,6 +62,11 @@ def redirect_to_url(code):
                     filename = urls[code]['file']
                     #return redirect(url_for('static', filename='user_files\\' + urls[code]['file'])) 
                     return redirect(url_for('static', filename=f'user_files/{filename}'))
+    return abort(404)
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template("page_not_found.html"),404
 
 
 if __name__ == '__main__':
