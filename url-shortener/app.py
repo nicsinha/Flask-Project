@@ -34,7 +34,7 @@ def your_url():
         else:
             f = request.files['file']
             full_name = request.form['code'] + secure_filename(f.filename)
-            f.save('D:\\Git\\Flask-Project\\url-shortener\\' + full_name)
+            f.save('D:\\Git\\Flask-Project\\url-shortener\\static\\user_files\\' + full_name)
             urls[request.form['code']] = {'file':full_name}
 
         
@@ -55,7 +55,11 @@ def redirect_to_url(code):
             urls = json.load(url_file)
             if code in urls.keys():
                 if 'url' in urls[code].keys():
-                    return redirect(urls[code]['url'])  
+                    return redirect(urls[code]['url']) 
+                else:
+                    filename = urls[code]['file']
+                    #return redirect(url_for('static', filename='user_files\\' + urls[code]['file'])) 
+                    return redirect(url_for('static', filename=f'user_files/{filename}'))
 
 
 if __name__ == '__main__':
